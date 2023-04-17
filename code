@@ -1,0 +1,35 @@
+import requests
+import os
+
+# URL de las imágenes a descargar
+URL_IMAGENES = [
+    "https://example.com/imagen1.jpg",
+    "https://example.com/imagen2.jpg",
+    "https://example.com/imagen3.jpg"
+]
+
+# Directorio local para guardar las imágenes
+DIRECTORIO_DESTINO = "imagenes"
+
+def descargar_imagenes(url_imagenes, directorio_destino):
+    # Crear el directorio de destino si no existe
+    if not os.path.exists(directorio_destino):
+        os.makedirs(directorio_destino)
+
+    # Descargar e guardar las imágenes
+    for url in url_imagenes:
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            nombre_archivo = os.path.join(directorio_destino, url.split("/")[-1])
+            with open(nombre_archivo, 'wb') as f:
+                for chunk in response.iter_content(1024):
+                    f.write(chunk)
+            print(f"Imagen descargada y guardada en: {nombre_archivo}")
+        else:
+            print(f"Error al descargar la imagen de la URL: {url}")
+
+def main():
+    descargar_imagenes(URL_IMAGENES, DIRECTORIO_DESTINO)
+
+if __name__ == "__main__":
+    main()
